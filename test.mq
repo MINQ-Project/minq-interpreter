@@ -1,0 +1,6 @@
+const variable = 10
+
+sandbox {
+    import console
+    console.write(String("Variable is: ", to_string(variable)))
+}

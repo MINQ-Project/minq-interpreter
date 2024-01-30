@@ -1,0 +1,34 @@
+{
+  "name": "minq",
+  "version": "0.0.1-INDEV",
+  "description": "a programming language",
+  "main": "src/index.ts",
+  "scripts": {
+    "test": "ts-node . -f \"test.mq\"",
+    "build": "tsc & pkg -t node14-win-x64 js/index.js -o bin/minq.exe",
+    "lint": "eslint **/*.ts --fix",
+    "format": "prettier --write **/*.ts"
+  },
+  "author": "maciko84",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^20.10.5",
+    "@types/readline-sync": "^1.4.8",
+    "@types/yargs": "^17.0.32",
+    "@typescript-eslint/eslint-plugin": "^6.19.1",
+    "@typescript-eslint/parser": "^6.19.1",
+    "eslint": "^8.56.0",
+    "prettier": "^3.2.4",
+    "rcedit": "^4.0.1"
+  },
+  "dependencies": {
+    "fs": "^0.0.1-security",
+    "pkg": "^5.8.1",
+    "read-line": "^0.1.2",
+    "readline-sync": "^1.4.10",
+    "resedit": "^2.0.0",
+    "ts-audio": "^0.7.4",
+    "typescript": "^5.3.3",
+    "yargs": "^17.7.2"
+  }
+}

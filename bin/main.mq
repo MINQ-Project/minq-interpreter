@@ -1,0 +1,2 @@
+import console as cons
+cons.write(String("Hello, world!\n", "It can be...\n", "Concatenated!\n"))
