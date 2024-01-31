@@ -23,4 +23,4 @@ To get started with MINQ, you can check out the [documentation](docs/index.md). 
 As MINQ is still in development, contributions are welcome. If you're interested in contributing, please check out the [project sheet](https://github.com/users/Maciko84/projects/1) for current tasks and guidelines.
 
 ## Contact
-If you have any questions or suggestions, feel free to reach out to @maciko84.
+If you have any questions or suggestions, feel free to reach out to @maciko84, or call for help in [discussions](https://github.com/Maciko84/minq/discussions).

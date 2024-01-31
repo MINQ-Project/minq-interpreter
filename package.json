@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "fs": "^0.0.1-security",
+    "nw": "^0.83.0",
     "pkg": "^5.8.1",
     "read-line": "^0.1.2",
     "readline-sync": "^1.4.10",
