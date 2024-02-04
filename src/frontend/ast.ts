@@ -65,8 +65,8 @@ export interface ImportStatement extends Stmt {
 }
 
 export interface SandboxStatement extends Stmt {
-  kind: "SandboxStatement",
-  body: Stmt[]
+  kind: "SandboxStatement";
+  body: Stmt[];
 }
 /**
  * represents a declaration expressions
@@ -81,6 +81,7 @@ export interface VarDeclaration extends Decl {
 }
 
 export interface FunctionDeclaration extends Decl {
+  lambada: boolean;
   kind: "FunctionDeclaration";
   parameters: string[];
   name: string;

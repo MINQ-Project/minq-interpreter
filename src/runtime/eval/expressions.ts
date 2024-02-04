@@ -40,7 +40,9 @@ function eval_numeric_binary_expr(
   } else if (operator == "*") {
     result = lhs.value * rhs.value;
   } else if (operator == "/") {
-    // TODO: Division by zero checks
+    if (rhs.value == 0) {
+      throw "ERROR: DIVISION BY ZERO!";
+    }
     result = lhs.value / rhs.value;
   } else {
     result = lhs.value % rhs.value;

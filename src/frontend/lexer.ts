@@ -49,6 +49,7 @@ const KEYWORDS: Record<string, TokenType> = {
   const: TokenType.Const,
 
   function: TokenType.Fn,
+  def: TokenType.Fn,
   class: TokenType.ClassKeyword,
   module: TokenType.ModuleKeyword,
 
@@ -112,7 +113,7 @@ export function tokenize(sourceCode: string): Token[] {
   // produce tokens until the EOF is reached.
   while (src.length > 0) {
     // COMMENTS
-    if (src[0] == "/") {
+    if (src[0] == "/" && (src[1] == "/" || src[1] == "*")) {
       // ONE LINE COMMENT
       if (src[1] == "/") {
         // remove
@@ -126,7 +127,7 @@ export function tokenize(sourceCode: string): Token[] {
       }
 
       // MULTILINE COMMENT
-      if (src[1] == "*") {
+      else if (src[1] == "*") {
         // remove
         src.shift();
         src.shift();

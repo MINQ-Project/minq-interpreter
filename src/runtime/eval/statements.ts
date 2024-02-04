@@ -90,16 +90,28 @@ export function eval_function_declaration(
   declaration: FunctionDeclaration,
   env: Environment,
 ): RuntimeVal {
-  // Create new function scope
-  const fn = {
-    type: "function",
-    name: declaration.name,
-    parameters: declaration.parameters,
-    declarationEnv: env,
-    body: declaration.body,
-  } as FunctionValue;
+  if (!declaration.lambada) {
+    // Create new function scope
+    const fn = {
+      type: "function",
+      name: declaration.name,
+      parameters: declaration.parameters,
+      declarationEnv: env,
+      body: declaration.body,
+    } as FunctionValue;
 
-  return env.declareVar(declaration.name, fn, true);
+    return env.declareVar(declaration.name, fn, true);
+  } else {
+    // return function because its a lambada
+    const fn = {
+      type: "function",
+      name: declaration.name,
+      parameters: declaration.parameters,
+      declarationEnv: env,
+      body: declaration.body,
+    } as FunctionValue;
+    return fn;
+  }
 }
 
 export function eval_class_declaration(
@@ -140,14 +152,16 @@ export function eval_module_declaration(
   return env.declareVar(declaration.name, mod, true);
 }
 
-export function eval_sandbox_statement(statement: SandboxStatement, env: Environment): RuntimeVal {
-
+export function eval_sandbox_statement(
+  statement: SandboxStatement,
+  env: Environment,
+): RuntimeVal {
   // create new sandboxed scope
   const enviroment = createGlobalEnv();
   let last: RuntimeVal = MK_NULL();
   statement.body.forEach((node) => {
     last = evaluate(node, enviroment);
-  })
+  });
 
   // return result
   return last;

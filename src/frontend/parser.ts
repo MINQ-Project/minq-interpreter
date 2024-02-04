@@ -3,7 +3,7 @@
 // ---------------          PARSER         -------------------
 // ---  Responsible for producing AST from the tokens.     ---
 // -----------------------------------------------------------
-import { exit } from "process";
+import { constrainedMemory, exit } from "process";
 import {
   AssignmentExpr,
   BinaryExpr,
@@ -36,6 +36,7 @@ import { Token, tokenize, TokenType } from "./lexer";
  * Frontend for producing a valid AST from sourcecode
  */
 export default class Parser {
+  private i: number = 0;
   private tokens: Token[] = [];
 
   /*
@@ -57,6 +58,7 @@ export default class Parser {
    */
   private eat() {
     const prev = this.tokens.shift() as Token;
+    this.i++;
     return prev;
   }
 
@@ -67,7 +69,14 @@ export default class Parser {
   private expect(type: TokenType, err: any) {
     const prev = this.tokens.shift() as Token;
     if (!prev || prev.type != type) {
-      console.error("Parser Error:\n", err, prev, " - Expecting: ", type);
+      console.error(
+        "Parser Error:\n",
+        err,
+        prev,
+        " - Expecting: ",
+        type,
+        " at token: " + this.i.toString(),
+      );
       process.exit(1);
     }
 
@@ -79,12 +88,13 @@ export default class Parser {
   }
 
   public produceAST(sourceCode: string): Program {
+    console.log("Tokenizing...");
     this.tokens = tokenize(sourceCode);
     const program: Program = {
       kind: "Program",
       body: [],
     };
-
+    console.log("parsing...");
     // Parse until end of file
     while (this.not_eof()) {
       program.body.push(this.parse_stmt());
@@ -101,7 +111,7 @@ export default class Parser {
       case TokenType.Const:
         return this.parse_var_declaration();
       case TokenType.Fn:
-        return this.parse_fn_declaration();
+        return this.parse_fn_declaration(undefined);
       case TokenType.ClassKeyword:
         return this.parse_class_declaration();
       case TokenType.If:
@@ -121,7 +131,10 @@ export default class Parser {
   parse_sandbox_statement(): Stmt {
     this.eat(); // eat statement keyword
 
-    this.expect(TokenType.OpenBrace, "Expected open brace after sandbox keyword")
+    this.expect(
+      TokenType.OpenBrace,
+      "Expected open brace after sandbox keyword",
+    );
     const body: Stmt[] = [];
 
     while (
@@ -130,10 +143,13 @@ export default class Parser {
     ) {
       body.push(this.parse_stmt());
     }
-    this.expect(TokenType.CloseBrace, "Expected close brace in sandbox statement");
+    this.expect(
+      TokenType.CloseBrace,
+      "Expected close brace in sandbox statement",
+    );
     return {
       kind: "SandboxStatement",
-      body
+      body,
     } as SandboxStatement;
   }
   parse_module_declaration(): Stmt {
@@ -156,7 +172,7 @@ export default class Parser {
           break;
 
         case TokenType.Fn:
-          const func = this.parse_fn_declaration() as FunctionDeclaration;
+          const func = this.parse_fn_declaration(false) as FunctionDeclaration;
           items.push(func);
           break;
         default:
@@ -193,7 +209,7 @@ export default class Parser {
           break;
 
         case TokenType.Fn:
-          const func = this.parse_fn_declaration() as FunctionDeclaration;
+          const func = this.parse_fn_declaration(false) as FunctionDeclaration;
           if (func.name == "constructor") {
             if (constructor) {
               console.error("cannot create multiple constructors for now!");
@@ -305,12 +321,30 @@ export default class Parser {
     } as WhileLoop;
   }
 
-  parse_fn_declaration(): Stmt {
-    this.eat(); // eat fn keyword
-    const name = this.expect(
-      TokenType.Identifier,
-      "Expected function name following fn keyword",
-    ).value;
+  parse_fn_declaration(islambda?: boolean): Stmt {
+    let name = "";
+    let lambada;
+    this.eat(); // eat function / def keyword
+    if (islambda == true && this.at().type !== TokenType.OpenBrace) {
+      this.expect(
+        TokenType.OpenBrace,
+        "expected open brace in lambda function (can be forced when using function keyword as expression)",
+      );
+    }
+
+    if (islambda == false && this.at().type !== TokenType.Identifier) {
+      this.expect(
+        TokenType.Identifier,
+        "expected identifier in function (can be forced in classes or modules)",
+      );
+    }
+
+    if (this.at().type == TokenType.Identifier) {
+      name = this.eat().value;
+      lambada = false;
+    } else {
+      lambada = true;
+    }
 
     const args = this.parse_args();
     const params: string[] = [];
@@ -342,6 +376,7 @@ export default class Parser {
     );
 
     const fn = {
+      lambada,
       body,
       name,
       parameters: params,
@@ -529,13 +564,16 @@ export default class Parser {
   private parse_args(): Expr[] {
     this.expect(TokenType.OpenParen, "Expected open parenthesis");
     let args: Expr[] = [];
-    if (this.at().type != TokenType.CloseParen) {
+
+    if (this.at().type !== TokenType.CloseParen) {
       args = this.parse_arguments_list();
     }
+
     this.expect(
       TokenType.CloseParen,
       "Missing closing parenthesis inside arguments list",
     );
+
     return args;
   }
 
@@ -563,7 +601,6 @@ export default class Parser {
 
     return args;
   }
-
   private parse_list_expr(): Expr {
     this.expect(
       TokenType.OpenBracket,
@@ -649,6 +686,9 @@ export default class Parser {
 
     // Determine which token we are currently at and return literal value
     switch (tk) {
+      // lambda
+      case TokenType.Fn:
+        return this.parse_fn_declaration(true);
       // User defined values.
       case TokenType.Identifier:
         return { kind: "Identifier", symbol: this.eat().value } as Identifier;

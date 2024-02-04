@@ -1,20 +1,6 @@
-import Parser from "../frontend/parser";
-import { evaluate } from "./interpreter";
-import { ValueToString } from "./printer";
-import {
-  StringVal,
-  MK_BOOL,
-  MK_NATIVE_FN,
-  MK_NULL,
-  MK_NUMBER,
-  MK_STRING,
-  RuntimeVal,
-  NumberVal,
-  MK_OBJECT,
-  MK_LIST,
-} from "./values";
+import { RuntimeVal } from "./values";
 
-import modules, { initializeValues } from "./modules";
+import { initializeValues } from "./modules";
 
 export function createGlobalEnv() {
   const env = initializeValues(new Environment());

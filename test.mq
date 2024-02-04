@@ -1,6 +1,2 @@
-const variable = 10
-
-sandbox {
-    import console
-    console.write(String("Variable is: ", to_string(variable)))
-}
+import console
+console.log( (2 + 2) / 2 )
