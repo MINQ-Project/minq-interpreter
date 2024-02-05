@@ -5,6 +5,8 @@ import { evaluate } from "./runtime/interpreter";
 import { exit } from "process";
 import * as yargs from "yargs";
 import { ValueToString } from "./runtime/printer";
+import file from "./runtime/modules/file";
+import MinqConsole from "./console";
 
 const argv = yargs
   .option("file", {
@@ -17,7 +19,6 @@ const argv = yargs
     description: "Log the result",
     type: "boolean",
   })
-  .demandOption(["file"], "Please provide source file to run minq interpreter")
   .help()
   .alias("help", "h").argv as any;
 
@@ -29,6 +30,9 @@ try {
 }
 
 function run(filename: string, log: boolean): void {
+  if (!filename) {
+    MinqConsole();
+  }
   const parser = new Parser();
   const env = createGlobalEnv();
 

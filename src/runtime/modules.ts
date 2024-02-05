@@ -92,13 +92,13 @@ export function initializeValues(env: Environment) {
   env.declareVar(
     "typeof",
     MK_NATIVE_FN((args, env) => {
-      if(args.length != 1) {
-        throw "typeof(): only one argument required!"
+      if (args.length != 1) {
+        throw "typeof(): only one argument required!";
       }
       return MK_STRING(args[0].type);
     }),
-    true
-  )
+    true,
+  );
 
   // modules
 

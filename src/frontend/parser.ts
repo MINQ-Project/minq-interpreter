@@ -88,13 +88,11 @@ export default class Parser {
   }
 
   public produceAST(sourceCode: string): Program {
-    console.log("Tokenizing...");
     this.tokens = tokenize(sourceCode);
     const program: Program = {
       kind: "Program",
       body: [],
     };
-    console.log("parsing...");
     // Parse until end of file
     while (this.not_eof()) {
       program.body.push(this.parse_stmt());
