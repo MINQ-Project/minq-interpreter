@@ -212,6 +212,13 @@ export function eval_call_expr(expr: CallExpr, env: Environment): RuntimeVal {
       result = evaluate(stmt, scope);
     }
 
+    if (result.type !== "object") {
+      throw (
+        "ERROR: CLASS CONSTRUCTOR MUST RETURN OBJECT, RETURNED: '" +
+        result.type +
+        "'!"
+      );
+    }
     return result;
   }
 
