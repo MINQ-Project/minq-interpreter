@@ -687,6 +687,8 @@ export default class Parser {
       // lambda
       case TokenType.Fn:
         return this.parse_fn_declaration(true);
+      case TokenType.OpenBracket:
+        return this.parse_list_expr();
       // User defined values.
       case TokenType.Identifier:
         return { kind: "Identifier", symbol: this.eat().value } as Identifier;

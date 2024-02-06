@@ -19,6 +19,7 @@ import {
   ClassDeclaration,
   ModuleDeclaration,
   SandboxStatement,
+  List,
 } from "../frontend/ast";
 import Environment from "./environment";
 import {
@@ -81,6 +82,8 @@ export function evaluate(astNode: Stmt, env: Environment): RuntimeVal {
       return eval_module_declaration(astNode as ModuleDeclaration, env);
     case "SandboxStatement":
       return eval_sandbox_statement(astNode as SandboxStatement, env);
+    case "List":
+      return eval_list_expr(astNode as List, env);
     // Handle unimplimented ast types as error.
     default:
       console.error(

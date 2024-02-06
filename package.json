@@ -4,7 +4,7 @@
   "description": "a programming language",
   "main": "src/index.ts",
   "scripts": {
-    "test": "ts-node . -f \"test.mq\"",
+    "test": "ts-node .",
     "build": "tsc & pkg -t node14-win-x64 js/index.js -o bin/minq.exe",
     "lint": "eslint **/*.ts --fix",
     "format": "prettier --write **/*.ts"

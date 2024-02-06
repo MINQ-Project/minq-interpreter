@@ -3,6 +3,7 @@ import {
   BinaryExpr,
   CallExpr,
   Identifier,
+  List,
   LogicExpr,
   MemberExpr,
   ObjectLiteral,
@@ -16,6 +17,7 @@ import {
   FunctionValue,
   ListVal,
   MK_BOOL,
+  MK_LIST,
   MK_NULL,
   MK_NUMBER,
   ModuleVal,
@@ -342,4 +344,12 @@ export function eval_member_expr(
       );
     } else return enviroment.get(symbol) as RuntimeVal;
   } else throw "Object Expression invaild for type " + identifier.kind + "!";
+}
+
+export function eval_list_expr(expr: List, env: Environment) {
+  const list: RuntimeVal[] = []
+  expr.value.forEach(element => {
+    list.push(evaluate(element, env));
+  });
+  return MK_LIST(...list);
 }
