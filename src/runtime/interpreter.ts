@@ -38,6 +38,7 @@ import {
   eval_binary_expr,
   eval_call_expr,
   eval_identifier,
+  eval_list_expr,
   eval_logic_expr,
   eval_member_expr,
   eval_object_expr,
