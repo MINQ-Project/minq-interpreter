@@ -1,1 +1,8 @@
-69 + 67
+import console
+var x = function () {
+    function subfunc() {
+        10
+    }
+    subfunc()
+}
+console.log(x())

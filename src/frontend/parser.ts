@@ -28,9 +28,11 @@ import {
   List,
   ModuleDeclaration,
   SandboxStatement,
+  EnumDeclaration,
 } from "./ast";
 
 import { Token, tokenize, TokenType } from "./lexer";
+import { tokenToString } from "typescript";
 
 /**
  * Frontend for producing a valid AST from sourcecode
@@ -122,10 +124,44 @@ export default class Parser {
         return this.parse_module_declaration();
       case TokenType.SandboxKeyword:
         return this.parse_sandbox_statement();
+      case TokenType.Enum:
+        return this.parse_enum_declaration();
       default:
         return this.parse_expr();
     }
   }
+
+  parse_enum_declaration(): Stmt {
+    this.eat(); // eat enum keyword
+    const name = this.expect(
+      TokenType.Identifier,
+      "Expected identifier after enum keyword",
+    ).value;
+    let list: string[] = []
+    this.expect(TokenType.OpenBrace, "Expected open brace in enum declaration")
+    while (
+      this.at().type !== TokenType.CloseBrace &&
+      this.at().type !== TokenType.EOF
+    ) {
+      if(this.at().type === TokenType.Identifier) {
+        list.push(this.expect(TokenType.Identifier, "Expected Identifier.").value);
+      }
+
+
+      if (this.at().type === TokenType.Comma) {
+        // Consume the comma to move to the next value
+        this.eat();
+      } else if (this.at().type !== TokenType.CloseBrace) {
+        console.error("Parser Error:\n", "Unexpected token in enum", this.at());
+        process.exit(1);
+      }
+    }
+    return { 
+      kind: "EnumDeclaration",
+     items: list
+     } as EnumDeclaration
+  }
+
   parse_sandbox_statement(): Stmt {
     this.eat(); // eat statement keyword
 
@@ -621,7 +657,7 @@ export default class Parser {
       }
     }
 
-    this.eat(); // eat ]
+    this.expect(TokenType.CloseBracket, "Expected Close Bracket after list") // eat ]
 
     return {
       kind: "List",

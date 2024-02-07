@@ -11,7 +11,8 @@ export type ValueType =
   | "class"
   | "module"
   | "native-cl"
-  | "list";
+  | "list"
+  | "enum";
 
 export interface RuntimeVal {
   type: ValueType;
@@ -146,4 +147,16 @@ export function MK_LIST(...items: RuntimeVal[]) {
     type: "list",
     elements: items,
   } as ListVal;
+}
+
+export interface EnumVal extends RuntimeVal {
+  type: "enum",
+  elements: string[]
+}
+
+export function MK_ENUM(...items: string[]) {
+  return {
+    type: "enum",
+    elements: items
+  } as EnumVal;
 }

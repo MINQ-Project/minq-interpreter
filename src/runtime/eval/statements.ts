@@ -1,5 +1,6 @@
 import {
   ClassDeclaration,
+  EnumDeclaration,
   FunctionDeclaration,
   IfStatement,
   ImportStatement,
@@ -16,6 +17,7 @@ import {
   ClassVal,
   FunctionValue,
   MK_BOOL,
+  MK_ENUM,
   MK_NULL,
   ModuleVal,
   RuntimeVal,
@@ -165,4 +167,11 @@ export function eval_sandbox_statement(
 
   // return result
   return last;
+}
+
+export function eval_enum_declaration(
+  declaration: EnumDeclaration,
+  env: Environment
+): RuntimeVal {
+  return env.declareVar(declaration.name, MK_ENUM(...declaration.items), true);
 }

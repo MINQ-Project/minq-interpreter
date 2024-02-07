@@ -20,6 +20,7 @@ export enum TokenType {
   ClassKeyword,
   ModuleKeyword,
   SandboxKeyword,
+  Enum,
 
   // import statement keywords
   ImportKeyword,
@@ -52,6 +53,7 @@ const KEYWORDS: Record<string, TokenType> = {
   def: TokenType.Fn,
   class: TokenType.ClassKeyword,
   module: TokenType.ModuleKeyword,
+  enum: TokenType.Enum,
 
   if: TokenType.If,
   while: TokenType.While,

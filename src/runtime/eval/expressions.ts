@@ -14,6 +14,7 @@ import { ValueToString } from "../printer";
 import {
   BooleanVal,
   ClassVal,
+  EnumVal,
   FunctionValue,
   ListVal,
   MK_BOOL,
@@ -343,7 +344,21 @@ export function eval_member_expr(
         "!"
       );
     } else return enviroment.get(symbol) as RuntimeVal;
-  } else throw "Object Expression invaild for type " + identifier.kind + "!";
+  }
+  else if (object.type == "enum") {
+    if (identifier.kind !== "Identifier") {
+      throw "cannot access nothing other than identifier from enum.";
+    }
+
+    const symbol = (identifier as Identifier).symbol;
+    // enumerator
+    const object_enum = object as EnumVal;
+    if(!object_enum.elements.includes(symbol)) {
+      throw "enum does not have value: " + symbol;
+    }
+    else return MK_NUMBER(object_enum.elements.indexOf(symbol));
+  }
+   else throw "Object Expression invaild for type " + identifier.kind + "!";
 }
 
 export function eval_list_expr(expr: List, env: Environment) {
