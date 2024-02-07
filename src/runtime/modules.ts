@@ -5,6 +5,7 @@ import minqconsole from "./modules/console";
 import file from "./modules/file";
 import logic from "./modules/logic";
 import math from "./modules/math";
+import web from "./modules/web";
 import string from "./native-classes/string";
 import { ValueToString } from "./printer";
 import {
@@ -128,4 +129,5 @@ modules.set("file", file);
 modules.set("math", math);
 modules.set("console", minqconsole);
 modules.set("logic", logic);
+modules.set("web", web)
 export default modules;

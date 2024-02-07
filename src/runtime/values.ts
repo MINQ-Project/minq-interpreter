@@ -150,13 +150,13 @@ export function MK_LIST(...items: RuntimeVal[]) {
 }
 
 export interface EnumVal extends RuntimeVal {
-  type: "enum",
-  elements: string[]
+  type: "enum";
+  elements: string[];
 }
 
 export function MK_ENUM(...items: string[]) {
   return {
     type: "enum",
-    elements: items
+    elements: items,
   } as EnumVal;
 }

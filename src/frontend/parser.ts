@@ -137,16 +137,17 @@ export default class Parser {
       TokenType.Identifier,
       "Expected identifier after enum keyword",
     ).value;
-    let list: string[] = []
-    this.expect(TokenType.OpenBrace, "Expected open brace in enum declaration")
+    const list: string[] = [];
+    this.expect(TokenType.OpenBrace, "Expected open brace in enum declaration");
     while (
       this.at().type !== TokenType.CloseBrace &&
       this.at().type !== TokenType.EOF
     ) {
-      if(this.at().type === TokenType.Identifier) {
-        list.push(this.expect(TokenType.Identifier, "Expected Identifier.").value);
+      if (this.at().type === TokenType.Identifier) {
+        list.push(
+          this.expect(TokenType.Identifier, "Expected Identifier.").value,
+        );
       }
-
 
       if (this.at().type === TokenType.Comma) {
         // Consume the comma to move to the next value
@@ -156,10 +157,10 @@ export default class Parser {
         process.exit(1);
       }
     }
-    return { 
+    return {
       kind: "EnumDeclaration",
-     items: list
-     } as EnumDeclaration
+      items: list,
+    } as EnumDeclaration;
   }
 
   parse_sandbox_statement(): Stmt {
@@ -657,7 +658,7 @@ export default class Parser {
       }
     }
 
-    this.expect(TokenType.CloseBracket, "Expected Close Bracket after list") // eat ]
+    this.expect(TokenType.CloseBracket, "Expected Close Bracket after list"); // eat ]
 
     return {
       kind: "List",

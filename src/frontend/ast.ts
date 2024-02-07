@@ -103,9 +103,9 @@ export interface ModuleDeclaration extends Decl {
 }
 
 export interface EnumDeclaration extends Decl {
-  kind: "EnumDeclaration",
+  kind: "EnumDeclaration";
   name: string;
-  items: string[]
+  items: string[];
 }
 
 /**  Expressions will result in a value at runtime unlike Statements */

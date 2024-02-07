@@ -171,7 +171,7 @@ export function eval_sandbox_statement(
 
 export function eval_enum_declaration(
   declaration: EnumDeclaration,
-  env: Environment
+  env: Environment,
 ): RuntimeVal {
   return env.declareVar(declaration.name, MK_ENUM(...declaration.items), true);
 }

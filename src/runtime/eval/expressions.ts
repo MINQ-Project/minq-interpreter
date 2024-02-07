@@ -344,8 +344,7 @@ export function eval_member_expr(
         "!"
       );
     } else return enviroment.get(symbol) as RuntimeVal;
-  }
-  else if (object.type == "enum") {
+  } else if (object.type == "enum") {
     if (identifier.kind !== "Identifier") {
       throw "cannot access nothing other than identifier from enum.";
     }
@@ -353,17 +352,15 @@ export function eval_member_expr(
     const symbol = (identifier as Identifier).symbol;
     // enumerator
     const object_enum = object as EnumVal;
-    if(!object_enum.elements.includes(symbol)) {
+    if (!object_enum.elements.includes(symbol)) {
       throw "enum does not have value: " + symbol;
-    }
-    else return MK_NUMBER(object_enum.elements.indexOf(symbol));
-  }
-   else throw "Object Expression invaild for type " + identifier.kind + "!";
+    } else return MK_NUMBER(object_enum.elements.indexOf(symbol));
+  } else throw "Object Expression invaild for type " + identifier.kind + "!";
 }
 
 export function eval_list_expr(expr: List, env: Environment) {
-  const list: RuntimeVal[] = []
-  expr.value.forEach(element => {
+  const list: RuntimeVal[] = [];
+  expr.value.forEach((element) => {
     list.push(evaluate(element, env));
   });
   return MK_LIST(...list);
