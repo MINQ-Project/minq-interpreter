@@ -1,6 +1,6 @@
 import validateArgs from "../../param-checker";
 import {
-    MK_MODULE,
+  MK_MODULE,
   MK_NATIVE_CLASS,
   MK_NATIVE_FN,
   MK_NULL,
@@ -50,23 +50,31 @@ const runOnPort = MK_NATIVE_FN((args, env) => {
     app.get("/", (req, res) => {
       res.setHeader("Content-Type", "text/html");
       res.send(
-        ParseMQHTML(readFileSync(config?.indexUrl as string).toString(), (_, env) => {
-          env.declareVar("query", MK_RUNTIMEVAL(req.query), true)
-          return MK_NULL()
-        }),
+        ParseMQHTML(
+          readFileSync(config?.indexUrl as string).toString(),
+          (_, env) => {
+            env.declareVar("query", MK_RUNTIMEVAL(req.query), true);
+            return MK_NULL();
+          },
+        ),
       );
     });
     config.urls.forEach((val, key) => {
       app.get(key, (req, res) => {
         res.setHeader("Content-Type", "text/html");
-        res.send(ParseMQHTML(readFileSync(val).toString(), (_, env) => {
-          env.declareVar("query", MK_RUNTIMEVAL(req.query), true)
-          return MK_NULL()
-        }));
+        res.send(
+          ParseMQHTML(readFileSync(val).toString(), (_, env) => {
+            env.declareVar("query", MK_RUNTIMEVAL(req.query), true);
+            return MK_NULL();
+          }),
+        );
       });
     });
 
-    console.log("Web: Application runned on port: " + (args[0] as NumberVal).value.toString())
+    console.log(
+      "Web: Application runned on port: " +
+        (args[0] as NumberVal).value.toString(),
+    );
     // Listen app
     app.listen((args[0] as NumberVal).value);
   }
@@ -76,4 +84,4 @@ const runOnPort = MK_NATIVE_FN((args, env) => {
 const map = new Map<string, RuntimeVal>();
 map.set("loadConfig", loadConfig);
 map.set("runOnPort", runOnPort);
-export default MK_MODULE("web", MK_OBJECT(map) as ObjectVal)
+export default MK_MODULE("web", MK_OBJECT(map) as ObjectVal);

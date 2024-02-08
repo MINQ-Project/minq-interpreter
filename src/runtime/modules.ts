@@ -3,10 +3,12 @@ import Environment from "./environment";
 import { evaluate } from "./interpreter";
 import minqconsole from "./modules/console";
 import file from "./modules/file";
+import json from "./modules/json";
 import logic from "./modules/logic";
 import math from "./modules/math";
 import web from "./modules/web";
 import string from "./native-classes/string";
+import validateArgs from "./param-checker";
 import { ValueToString } from "./printer";
 import {
   MK_BOOL,
@@ -65,8 +67,10 @@ export function initializeValues(env: Environment) {
   env.declareVar(
     "exit",
     MK_NATIVE_FN((args, scope) => {
-      process.exit(0);
-      return MK_NULL();
+      if (!validateArgs(args, { type: ["number"], count: 1 })) {
+        throw "exit(): INVAILD ARGS!";
+      }
+      process.exit((args[0] as NumberVal).value);
     }),
     true,
   );
@@ -129,5 +133,6 @@ modules.set("file", file);
 modules.set("math", math);
 modules.set("console", minqconsole);
 modules.set("logic", logic);
-modules.set("web", web)
+modules.set("web", web);
+modules.set("json", json);
 export default modules;

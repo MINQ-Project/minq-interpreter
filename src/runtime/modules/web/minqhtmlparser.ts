@@ -26,7 +26,7 @@ export default function ParseMQHTML(mqhtml: string, creator: FunctionCall) {
       }),
       true,
     );
-    const newcode = code.substring(4, code.length - 2)
+    const newcode = code.substring(4, code.length - 2);
     const ast = parser.produceAST(newcode);
     evaluate(ast, env);
     return result;
