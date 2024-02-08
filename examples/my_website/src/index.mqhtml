@@ -1,1 +1,1 @@
-<h1><?mq echo("HELLO, WORLD! (FROM MINQ)")?></h1>
+<h1><?mq echo(to_string(query))?></h1>
