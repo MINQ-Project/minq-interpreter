@@ -10,7 +10,7 @@ MINQ is a unique programming language with syntax based on lua, python and javas
 
 - **Object-Oriented**: MINQ supports object-oriented programming. You can define classes and methods, and create objects from those classes.
 
-- **Functionality**: MINQ is still in development, but it already has a range of functionality. You can perform a variety of tasks, from writing to the console to making a console game like quiz!
+- **Functionality**: MINQ is still in development, but it already has a range of functionality. You can perform a variety of tasks, from writing to the console to making a web application using `web` module and minqhtml!
 
 ## Links:
 * [Project Sheet](https://github.com/users/Maciko84/projects/1)
