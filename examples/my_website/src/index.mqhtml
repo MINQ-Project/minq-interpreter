@@ -1,0 +1,1 @@
+<h1><?mq echo("HELLO, WORLD! (FROM MINQ)")?></h1>

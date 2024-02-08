@@ -1,0 +1,5 @@
+{
+    urls: {
+        __index__: "src/index.mqhtml"
+    }
+}

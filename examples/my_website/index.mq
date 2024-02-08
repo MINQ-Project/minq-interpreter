@@ -1,0 +1,5 @@
+import web as w
+import file as f
+import console
+w.loadConfig(f.require("config.mq"))
+w.runOnPort(3000)
