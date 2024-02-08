@@ -5,6 +5,7 @@ import {
   MK_NATIVE_FN,
   MK_NULL,
   MK_OBJECT,
+  MK_RUNTIMEVAL,
   NumberVal,
   ObjectVal,
   RuntimeVal,
@@ -13,6 +14,7 @@ import CreateConfig, { MQWebProjectConfig } from "./MQWebProjectConfig";
 import Express from "express";
 import ParseMQHTML from "./minqhtmlparser";
 import { readFileSync } from "fs";
+import cookieParser from "cookie-parser";
 
 let config: MQWebProjectConfig | undefined;
 let app = Express();
@@ -44,19 +46,27 @@ const runOnPort = MK_NATIVE_FN((args, env) => {
   } else {
     // Create Endpoints for EVERY url and index
     app = Express(); // to verify that it does`nt have endpoints
+    app.use(cookieParser());
     app.get("/", (req, res) => {
       res.setHeader("Content-Type", "text/html");
       res.send(
-        ParseMQHTML(readFileSync(config?.indexUrl as string).toString()),
+        ParseMQHTML(readFileSync(config?.indexUrl as string).toString(), (_, env) => {
+          env.declareVar("query", MK_RUNTIMEVAL(req.query), true)
+          return MK_NULL()
+        }),
       );
     });
     config.urls.forEach((val, key) => {
       app.get(key, (req, res) => {
         res.setHeader("Content-Type", "text/html");
-        res.send(ParseMQHTML(readFileSync(val).toString()));
+        res.send(ParseMQHTML(readFileSync(val).toString(), (_, env) => {
+          env.declareVar("query", MK_RUNTIMEVAL(req.query), true)
+          return MK_NULL()
+        }));
       });
     });
 
+    console.log("Web: Application runned on port: " + (args[0] as NumberVal).value.toString())
     // Listen app
     app.listen((args[0] as NumberVal).value);
   }

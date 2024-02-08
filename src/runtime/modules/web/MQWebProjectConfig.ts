@@ -1,3 +1,4 @@
+import { ValueToString } from "../../printer";
 import { ObjectVal, StringVal } from "../../values";
 
 export interface MQWebProjectConfig {
@@ -8,7 +9,7 @@ export interface MQWebProjectConfig {
 export default function CreateConfig(object: ObjectVal) {
   if (
     !object.properties.has("urls") ||
-    object.properties.get("urls")?.type === "object"
+    object.properties.get("urls")?.type !== "object"
   ) {
     throw "WebERROR: Config Does not have Urls Defined";
   } else {
