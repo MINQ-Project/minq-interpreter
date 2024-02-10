@@ -360,10 +360,10 @@ export default class Parser {
     let name = "";
     let lambada;
     this.eat(); // eat function / def keyword
-    if (islambda == true && this.at().type !== TokenType.OpenBrace) {
+    if (islambda == true && this.at().type !== TokenType.OpenParen) {
       this.expect(
-        TokenType.OpenBrace,
-        "expected open brace in lambda function (can be forced when using function keyword as expression)",
+        TokenType.OpenParen,
+        "expected open paren in lambda function (can be forced when using function keyword as expression)",
       );
     }
 

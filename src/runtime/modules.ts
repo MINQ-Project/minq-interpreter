@@ -22,7 +22,14 @@ import {
   StringVal,
 } from "./values";
 
+import minq from "./minq";
+
+
 export function initializeValues(env: Environment) {
+  // ! MINQ FUNCTION !
+  env.declareVar("minq", minq, true);
+  env.declareVar("mq", minq, true);
+
   // Values
 
   env.declareVar("true", MK_BOOL(true), true);
