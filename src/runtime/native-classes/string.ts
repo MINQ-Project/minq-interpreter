@@ -18,8 +18,6 @@ function _construct(args: RuntimeVal[], env: Environment): RuntimeVal {
   args.forEach((arg) => {
     if (arg.type == "string") {
       string = string + (arg as StringVal).value;
-    } else if (arg.type == "number") {
-      string = string + String.fromCharCode((arg as NumberVal).value);
     } else {
       string += ValueToString(arg);
     }
@@ -46,9 +44,25 @@ function split(args: RuntimeVal[], env: Environment): RuntimeVal {
   return MK_LIST(...val);
 }
 
+function fromCharCode(args: RuntimeVal[], env: Environment) {
+  let string = "";
+  if(!validateArgs(args, {
+    type: [ "number" ],
+    count: undefined
+  })) {
+    throw "fromCharCode(): invaild args"
+  }
+
+  args.forEach((arg) => {
+    string += String.fromCharCode((arg as NumberVal).value)
+  });
+  return MK_STRING(string);
+}
+
 const map = new Map<string, RuntimeVal>();
 
 map.set("split", MK_NATIVE_FN(split));
+map.set("fromCharCode", MK_NATIVE_FN(fromCharCode))
 
 export default MK_NATIVE_CLASS(
   "String",
