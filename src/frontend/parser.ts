@@ -721,6 +721,11 @@ export default class Parser {
 
     // Determine which token we are currently at and return literal value
     switch (tk) {
+      case TokenType.String:
+        return {
+            kind: "StringLiteral",
+            value: this.eat().value
+        } as StringLiteral;
       // lambda
       case TokenType.Fn:
         return this.parse_fn_declaration(true);

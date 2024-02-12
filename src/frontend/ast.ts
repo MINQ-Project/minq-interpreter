@@ -186,3 +186,8 @@ export interface List extends Expr {
   kind: "List";
   value: Expr[];
 }
+
+export interface StringLiteral extends Expr {
+  kind: "StringLiteral",
+  value: string
+}

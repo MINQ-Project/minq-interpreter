@@ -7,6 +7,7 @@ import {
   LogicExpr,
   MemberExpr,
   ObjectLiteral,
+  StringLiteral,
 } from "../../frontend/ast";
 import Environment from "../environment";
 import { evaluate } from "../interpreter";
@@ -21,6 +22,7 @@ import {
   MK_LIST,
   MK_NULL,
   MK_NUMBER,
+  MK_STRING,
   ModuleVal,
   NativeClassVal,
   NativeFnValue,
@@ -364,4 +366,8 @@ export function eval_list_expr(expr: List, env: Environment) {
     list.push(evaluate(element, env));
   });
   return MK_LIST(...list);
+}
+
+export function eval_string_literal(expr: StringLiteral, env: Environment) {
+  return MK_STRING(expr.value);
 }

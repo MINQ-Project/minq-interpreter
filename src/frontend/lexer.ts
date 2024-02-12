@@ -4,11 +4,14 @@
 // ---  Responsible for producing tokens from the source   ---
 // -----------------------------------------------------------
 
+import { Console } from "console";
+
 // Represents tokens that our language understands in parsing.
 export enum TokenType {
   // Literal Types
   Number,
   Identifier,
+  String,
   // Keywords
   Let,
   Const,
@@ -231,30 +234,7 @@ export function tokenize(sourceCode: string): Token[] {
       }
       // Remove closing quote from source
       src.shift();
-      const str = literal.split("");
-      const numbers: number[] = new Array<number>();
-      // convert to number[]
-      while (true) {
-        if (str.length == 0) {
-          break;
-        }
-        numbers.push(str.shift()?.charCodeAt(0) as number);
-      }
-
-      // convert into String native-class creation
-      let command = "";
-      command += "String(";
-      numbers.forEach((element) => {
-        command += element.toString() + ",";
-      });
-      command = command.substring(0, command.length - 1);
-      command += ")";
-      const tokens2 = tokenize(command);
-      tokens2.slice(0, tokens2.length - 1).forEach((element, index) => {
-        if (index != tokens2.length) {
-          tokens.push(element);
-        }
-      });
+      tokens.push(token(literal, TokenType.String))
     } // Handle numeric literals -> Integers
     else if (isint(src[0])) {
       let num = "";

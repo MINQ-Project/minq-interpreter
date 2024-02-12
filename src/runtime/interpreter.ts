@@ -42,6 +42,7 @@ import {
   eval_logic_expr,
   eval_member_expr,
   eval_object_expr,
+  eval_string_literal,
 } from "./eval/expressions";
 export function evaluate(astNode: Stmt, env: Environment): RuntimeVal {
   switch (astNode.kind) {
@@ -85,6 +86,8 @@ export function evaluate(astNode: Stmt, env: Environment): RuntimeVal {
       return eval_sandbox_statement(astNode as SandboxStatement, env);
     case "List":
       return eval_list_expr(astNode as List, env);
+    case "StringLiteral":
+      return eval_string_literal(astNode as StringLiteral, env);
     // Handle unimplimented ast types as error.
     default:
       console.error(

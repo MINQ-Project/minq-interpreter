@@ -7,7 +7,6 @@ import modules from "./modules";
 import e from "express";
 // minq (or mq) is a main function of MINQ!
 
-
 function _MK_THEN_FUNCTION(val: RuntimeVal) {
     const func = MK_NATIVE_FN((args, env) => {
         if(!validateArgs(args, { type: [ "function" ], count: 1 })) {
