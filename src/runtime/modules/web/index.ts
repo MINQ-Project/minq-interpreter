@@ -15,6 +15,7 @@ import Express from "express";
 import ParseMQHTML from "./minqhtmlparser";
 import { readFileSync } from "fs";
 import cookieParser from "cookie-parser";
+import { marked } from "marked";
 
 let config: MQWebProjectConfig | undefined;
 let app = Express();
@@ -46,28 +47,67 @@ const runOnPort = MK_NATIVE_FN((args, env) => {
   } else {
     // Create Endpoints for EVERY url and index
     app = Express(); // to verify that it does`nt have endpoints
+    function parseFile(val: string, query: any): any {
+      if (val.endsWith(".mqhtml") || val.endsWith(".minqhtml"))
+      {
+        return {
+            ContentType: "text/html",
+            value: ParseMQHTML(readFileSync(val).toString(), (_, env) => {
+              env.declareVar("query", MK_RUNTIMEVAL(query), true);
+              return MK_NULL();
+            })
+
+        }
+      }
+      else if (val.endsWith(".html")) {
+        return {
+          ContentType: "text/html",
+          value: readFileSync(val).toString()
+        }
+      }
+      else if (val.endsWith(".css")) {
+        return {
+          ContentType: "text/css",
+          value: readFileSync(val).toString()
+        }
+      }
+      else if (val.endsWith(".md")) {
+        const htmlString = marked.parse(val);
+        return {
+          ContentType: "text/html",
+          value: htmlString 
+        }
+      }
+      else if (val.endsWith(".js")) {
+        return {
+          ContentType: "application/javascript",
+          value: readFileSync(val).toString()
+        }
+      }
+      else {
+        return {
+          ContentType: "application/octet-stream",
+          value: readFileSync(val).toString()
+        }
+      }
+    }
     app.use(cookieParser());
     app.get("/", (req, res) => {
-      res.setHeader("Content-Type", "text/html");
+      const returned = parseFile(config?.indexUrl as string, req.query);
+      res.setHeader("Content-Type", returned.ContentType) 
       res.send(
-        ParseMQHTML(
-          readFileSync(config?.indexUrl as string).toString(),
-          (_, env) => {
-            env.declareVar("query", MK_RUNTIMEVAL(req.query), true);
-            return MK_NULL();
-          },
-        ),
+        returned.value
       );
+      res.end();
     });
     config.urls.forEach((val, key) => {
-      app.get(key, (req, res) => {
-        res.setHeader("Content-Type", "text/html");
+      app.get("/" + key, (req, res) => {
+        const returned = parseFile(val, req.query);
+        res.setHeader("Content-Type", returned.ContentType) 
         res.send(
-          ParseMQHTML(readFileSync(val).toString(), (_, env) => {
-            env.declareVar("query", MK_RUNTIMEVAL(req.query), true);
-            return MK_NULL();
-          }),
+          returned.value
         );
+        res.end();
       });
     });
 
