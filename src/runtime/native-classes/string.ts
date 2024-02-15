@@ -53,7 +53,8 @@ function fromCharCode(args: RuntimeVal[], env: Environment) {
     type: [ "number" ],
     count: undefined
   })) {
-    throwError("fromCharCode(): invaild args", env)
+    throwError("fromCharCode(): invaild args", env) 
+    return MK_NULL();
   }
 
   args.forEach((arg) => {
