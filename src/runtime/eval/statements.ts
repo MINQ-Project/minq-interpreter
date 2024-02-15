@@ -18,8 +18,11 @@ import {
   FunctionValue,
   MK_BOOL,
   MK_ENUM,
+  MK_MODULE,
   MK_NULL,
+  MK_OBJECT,
   ModuleVal,
+  ObjectVal,
   RuntimeVal,
 } from "../values";
 
@@ -164,6 +167,10 @@ export function eval_sandbox_statement(
   statement.body.forEach((node) => {
     last = evaluate(node, enviroment);
   });
+  // make new module if 'to' keyword found
+  if(statement.target) {
+    env.declareVar(statement.target, MK_MODULE(statement.target, MK_OBJECT(enviroment.Variables()) as ObjectVal), true);
+  }
 
   // return result
   return last;

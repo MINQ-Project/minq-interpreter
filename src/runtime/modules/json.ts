@@ -1,3 +1,4 @@
+import { throwError } from "../error-handler";
 import validateArgs from "../param-checker";
 import {
   MK_MODULE,
@@ -19,14 +20,14 @@ const serialize = MK_NATIVE_FN((args, env) => {
       count: 1,
     })
   ) {
-    throw "serialize(): invaild args!";
+    throwError("serialize(): invaild args!", env);
   }
   return MK_STRING(JSON.stringify(RuntimeValToJsObject(args[0])));
 });
 
 const deserialize = MK_NATIVE_FN((args, env) => {
   if (!validateArgs(args, { type: ["string"], count: 1 })) {
-    throw "deserialize(): invaild args!";
+    throwError("deserialize(): invaild args!", env);
   }
   return MK_RUNTIMEVAL(JSON.parse((args[0] as StringVal).value));
 });

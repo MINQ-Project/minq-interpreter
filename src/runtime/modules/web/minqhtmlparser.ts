@@ -6,6 +6,7 @@ import validateArgs from "../../param-checker";
 import { ValueToString } from "../../printer";
 import { FunctionCall, MK_NATIVE_FN, MK_NULL, MK_STRING, StringVal } from "../../values";
 import katex from "katex";
+import { throwError } from "../../error-handler";
 
 const renderer = new marked.Renderer();
 renderer.text = (text: string) => {
@@ -38,7 +39,8 @@ export default function ParseMQHTML(mqhtml: string, creator: FunctionCall) {
     env.declareVar("md", MK_NATIVE_FN((args, env) => {
       if(!validateArgs(args, { type: [ "string" ] }))
       {
-        throw "md(): invaild args"
+        throwError("md(): invaild args", env);
+        return MK_NULL();
       }
       const htmlString = marked.parse((args[0] as StringVal).value);
       return MK_STRING(htmlString as string);

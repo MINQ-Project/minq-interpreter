@@ -22,7 +22,8 @@ import {
   StringVal,
 } from "./values";
 
-import minq from "./minq";
+import minq from "./minq-expression";
+import errorHandler, { throwError } from "./error-handler";
 
 
 export function initializeValues(env: Environment) {
@@ -30,19 +31,22 @@ export function initializeValues(env: Environment) {
   env.declareVar("minq", minq, true);
   env.declareVar("mq", minq, true);
 
-  // Values
+  // ! ERROR CHECKING !
+  env.declareVar("error", errorHandler, true);
+
+  // | Values |
 
   env.declareVar("true", MK_BOOL(true), true);
   env.declareVar("false", MK_BOOL(false), true);
   env.declareVar("null", MK_NULL(), true);
 
-  // Arguments
+  // | Command Line Arguments |
   const list = new Array<RuntimeVal>();
   process.argv.forEach((element) => {
     list.push(MK_STRING(element));
   });
   env.declareVar("args", MK_LIST(...list), true);
-  // global functions
+  // | global functions |
   env.declareVar(
     "eval",
     MK_NATIVE_FN((args, env) => {
@@ -51,7 +55,7 @@ export function initializeValues(env: Environment) {
         const parser = new Parser();
         const enviroment = new Environment(env);
         if (val.type !== "string") {
-          throw "eval(): can eval only string!";
+          throwError("eval(): can eval only string!", env);
         }
 
         const program = parser.produceAST((val as StringVal).value);
@@ -75,7 +79,7 @@ export function initializeValues(env: Environment) {
     "exit",
     MK_NATIVE_FN((args, scope) => {
       if (!validateArgs(args, { type: ["number"], count: 1 })) {
-        throw "exit(): INVAILD ARGS!";
+        throwError("exit(): INVAILD ARGS!", scope);
       }
       process.exit((args[0] as NumberVal).value);
     }),
@@ -85,6 +89,9 @@ export function initializeValues(env: Environment) {
   env.declareVar(
     "to_string",
     MK_NATIVE_FN((args, env) => {
+      if(args.length !== 1) {
+        throwError("to_string(): Invaild args", env);
+      }
       return MK_STRING(ValueToString(args[0]));
     }),
     true,
@@ -94,7 +101,7 @@ export function initializeValues(env: Environment) {
     "parse_string",
     MK_NATIVE_FN((args, env) => {
       if (args.length != 1 || args[0].type != "string") {
-        throw "parse_string(): invaild args";
+        throwError("parse_string(): invaild args", env);
       }
       return MK_NUMBER(Number.parseFloat((args[0] as StringVal).value));
     }),
@@ -105,7 +112,7 @@ export function initializeValues(env: Environment) {
     "typeof",
     MK_NATIVE_FN((args, env) => {
       if (args.length != 1) {
-        throw "typeof(): only one argument required!";
+        throwError("typeof(): only one argument required!", env);
       }
       return MK_STRING(args[0].type);
     }),
@@ -118,11 +125,11 @@ export function initializeValues(env: Environment) {
     "get_module",
     MK_NATIVE_FN((args, env) => {
       if (args.length != 1 || args[0].type != "string") {
-        throw "get_module(): invaild args";
+        throwError("get_module(): invaild args", env);
       }
       const str = (args[0] as StringVal).value;
       if (!modules.has(str)) {
-        throw "get_module(): unknown module '" + str + "'.";
+        throwError("get_module(): unknown module '" + str + "'.", env);
       }
       return modules.get(str) as RuntimeVal;
     }),

@@ -32,7 +32,7 @@ import {
 } from "./ast";
 
 import { Token, tokenize, TokenType } from "./lexer";
-import { tokenToString } from "typescript";
+import { isUnparsedSource, tokenToString } from "typescript";
 
 /**
  * Frontend for producing a valid AST from sourcecode
@@ -182,9 +182,18 @@ export default class Parser {
       TokenType.CloseBrace,
       "Expected close brace in sandbox statement",
     );
-    return {
+
+    let target: undefined | string = undefined;
+
+    if(this.at().type == TokenType.ToKeyword) {
+      this.eat(); // eat to keyword
+      target = this.expect(TokenType.Identifier, "Expected identifier after 'to' keyword").value;
+    }
+
+      return {
       kind: "SandboxStatement",
       body,
+      target,
     } as SandboxStatement;
   }
   parse_module_declaration(): Stmt {

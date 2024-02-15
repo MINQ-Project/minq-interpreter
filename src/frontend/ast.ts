@@ -68,6 +68,7 @@ export interface ImportStatement extends Stmt {
 export interface SandboxStatement extends Stmt {
   kind: "SandboxStatement";
   body: Stmt[];
+  target?: string
 }
 /**
  * represents a declaration expressions

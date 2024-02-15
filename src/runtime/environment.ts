@@ -1,6 +1,7 @@
-import { RuntimeVal } from "./values";
+import { MK_NULL, RuntimeVal } from "./values";
 
 import { initializeValues } from "./modules";
+import { throwError } from "./error-handler";
 
 export function createGlobalEnv() {
   const env = initializeValues(new Environment());
@@ -25,7 +26,7 @@ export default class Environment {
     constant: boolean,
   ): RuntimeVal {
     if (this.variables.has(varname)) {
-      throw `Cannot declare variable ${varname}. As it already is defined.`;
+      throwError(`Cannot declare variable ${varname}. As it already is defined.`, this);
     }
 
     this.variables.set(varname, value);
@@ -40,7 +41,7 @@ export default class Environment {
 
     // Cannot assign to constant
     if (env.constants.has(varname)) {
-      throw `Cannot reasign to variable ${varname} as it was declared constant.`;
+      throwError(`Cannot reasign to variable ${varname} as it was declared constant.`, this);
     }
 
     env.variables.set(varname, value);
@@ -58,7 +59,11 @@ export default class Environment {
     }
 
     if (this.parent == undefined) {
-      throw `Cannot resolve '${varname}' as it does not exist.`;
+      throwError(`Cannot resolve '${varname}' as it does not exist.`, this);
+      // trick interpreter
+      const trickEnv = new Environment();
+      trickEnv.declareVar(varname, MK_NULL(), true);
+      return trickEnv;
     }
 
     return this.parent.resolve(varname);
@@ -66,7 +71,8 @@ export default class Environment {
 
   public deleteVar(varname: string): RuntimeVal {
     if (!this.variables.has(varname)) {
-      throw `cannot delete var '${varname}' as it does not exist.`;
+      throwError(`cannot delete var '${varname}' as it does not exist.`, this);
+      return MK_NULL();
     }
     const variable = this.lookupVar(varname);
     this.variables.delete(varname);

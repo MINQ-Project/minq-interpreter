@@ -16,6 +16,7 @@ import ParseMQHTML from "./minqhtmlparser";
 import { readFileSync } from "fs";
 import cookieParser from "cookie-parser";
 import { marked } from "marked";
+import { throwError } from "../../error-handler";
 
 let config: MQWebProjectConfig | undefined;
 let app = Express();
@@ -26,10 +27,11 @@ const loadConfig = MK_NATIVE_FN((args, env) => {
       count: 1,
     })
   ) {
-    throw "WebERROR: Invaild Args For loadConfig()";
+    throwError("WebERROR: Invaild Args For loadConfig()", env);
+    return MK_NULL();
   }
 
-  config = CreateConfig(args[0] as ObjectVal);
+  config = CreateConfig(args[0] as ObjectVal, env);
   return MK_NULL();
 });
 
@@ -40,10 +42,10 @@ const runOnPort = MK_NATIVE_FN((args, env) => {
       count: 1,
     })
   ) {
-    throw "WebERROR: Invaild Args For runOnPort()";
+    throwError("WebERROR: Invaild Args For runOnPort()", env);
   }
   if (config === undefined) {
-    throw "WebERROR: Config Not Defined. please use loadConfig() to load configuration!";
+    throwError("WebERROR: Config Not Defined. please use loadConfig() to load configuration!", env);
   } else {
     // Create Endpoints for EVERY url and index
     app = Express(); // to verify that it does`nt have endpoints

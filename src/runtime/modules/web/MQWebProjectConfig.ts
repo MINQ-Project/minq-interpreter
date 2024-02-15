@@ -1,17 +1,20 @@
+import Environment from "../../environment";
+import { throwError } from "../../error-handler";
 import { ValueToString } from "../../printer";
-import { ObjectVal, StringVal } from "../../values";
+import { MK_NULL, ObjectVal, StringVal } from "../../values";
 
 export interface MQWebProjectConfig {
   urls: Map<string, string>;
   indexUrl: string;
 }
 // Convertor of MINQ object to MQWebProjectConfig
-export default function CreateConfig(object: ObjectVal) {
+export default function CreateConfig(object: ObjectVal, env: Environment) {
   if (
     !object.properties.has("urls") ||
     object.properties.get("urls")?.type !== "object"
   ) {
-    throw "WebERROR: Config Does not have Urls Defined";
+    throwError("WebERROR: Config Does not have Urls Defined", env);
+    return undefined;
   } else {
     const urls = new Map<string, string>();
     (object.properties.get("urls") as ObjectVal).properties.forEach(

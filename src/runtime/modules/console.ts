@@ -11,6 +11,7 @@ import {
   StringVal,
 } from "../values";
 import readlineSync from "readline-sync";
+import { throwError } from "../error-handler";
 const log = MK_NATIVE_FN((args, scope) => {
   args.forEach((val) => {
     console.log(ValueToString(val));
@@ -26,9 +27,10 @@ const map = new Map<string, RuntimeVal>();
 const write = MK_NATIVE_FN((args, scope) => {
   args.forEach((val) => {
     if (val.type !== "string") {
-      throw "Error: can write only strings using 'write' method. use 'log' method for support to other types.";
+      throwError("Error: can write only strings using 'write' method. use 'log' method for support to other types.", scope);
+    } else {
+      process.stdout.write((val as StringVal).value);
     }
-    process.stdout.write((val as StringVal).value);
   });
   return MK_NULL();
 });

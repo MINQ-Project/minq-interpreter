@@ -1,10 +1,12 @@
 import Environment from "../environment";
+import { throwError } from "../error-handler";
 import validateArgs from "../param-checker";
 import { ValueToString } from "../printer";
 import {
   MK_LIST,
   MK_NATIVE_CLASS,
   MK_NATIVE_FN,
+  MK_NULL,
   MK_OBJECT,
   MK_STRING,
   NumberVal,
@@ -32,7 +34,8 @@ function split(args: RuntimeVal[], env: Environment): RuntimeVal {
       count: 2,
     })
   ) {
-    throw "split(): invaild arguments";
+    throwError("split(): invaild arguments", env);
+    return MK_NULL();
   }
   const string = (args[0] as StringVal).value;
   const delimeter = (args[1] as StringVal).value;
@@ -50,7 +53,7 @@ function fromCharCode(args: RuntimeVal[], env: Environment) {
     type: [ "number" ],
     count: undefined
   })) {
-    throw "fromCharCode(): invaild args"
+    throwError("fromCharCode(): invaild args", env)
   }
 
   args.forEach((arg) => {

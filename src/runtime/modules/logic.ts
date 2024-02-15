@@ -1,13 +1,16 @@
 import validateArgs from "../param-checker";
+import { throwError } from "../error-handler";
 import {
   BooleanVal,
   MK_BOOL,
   MK_MODULE,
   MK_NATIVE_FN,
+  MK_NULL,
   MK_OBJECT,
   ObjectVal,
   RuntimeVal,
 } from "../values";
+
 const not = MK_NATIVE_FN((args, env) => {
   if (
     !validateArgs(args, {
@@ -15,10 +18,12 @@ const not = MK_NATIVE_FN((args, env) => {
       count: 1,
     })
   ) {
-    throw "LOGIC: invaild args";
+    throwError("LOGIC: invaild args", env);
+    return MK_NULL();
   }
   return MK_BOOL(!(args[0] as BooleanVal).value);
 });
+
 const and = MK_NATIVE_FN((args, env) => {
   if (
     !validateArgs(args, {
@@ -26,7 +31,8 @@ const and = MK_NATIVE_FN((args, env) => {
       count: 2,
     })
   ) {
-    throw "LOGIC: invaild args";
+    throwError("LOGIC: invaild args", env);
+    return MK_NULL();
   }
   return MK_BOOL(
     (args[0] as BooleanVal).value && (args[1] as BooleanVal).value,
@@ -40,12 +46,14 @@ const nand = MK_NATIVE_FN((args, env) => {
       count: 2,
     })
   ) {
-    throw "LOGIC: invaild args";
+    throwError("LOGIC: invaild args", env);
+    return MK_NULL();
   }
   return MK_BOOL(
     !((args[0] as BooleanVal).value && (args[1] as BooleanVal).value),
   );
 });
+
 const or = MK_NATIVE_FN((args, env) => {
   if (
     !validateArgs(args, {
@@ -53,7 +61,8 @@ const or = MK_NATIVE_FN((args, env) => {
       count: 2,
     })
   ) {
-    throw "LOGIC: invaild args";
+    throwError("LOGIC: invaild args", env);
+    return MK_NULL();
   }
   return MK_BOOL(
     (args[0] as BooleanVal).value || (args[1] as BooleanVal).value,
@@ -67,7 +76,8 @@ const nor = MK_NATIVE_FN((args, env) => {
       count: 2,
     })
   ) {
-    throw "LOGIC: invaild args";
+    throwError("LOGIC: invaild args", env);
+    return MK_NULL();
   }
   return MK_BOOL(
     !((args[0] as BooleanVal).value || (args[1] as BooleanVal).value),
@@ -81,7 +91,8 @@ const xor = MK_NATIVE_FN((args, env) => {
       count: 2,
     })
   ) {
-    throw "LOGIC: invaild args";
+    throwError("LOGIC: invaild args", env);
+    return MK_NULL();
   }
   const left = (args[0] as BooleanVal).value;
   const right = (args[1] as BooleanVal).value;
@@ -95,7 +106,8 @@ const nxor = MK_NATIVE_FN((args, env) => {
       count: 2,
     })
   ) {
-    throw "LOGIC: invaild args";
+    throwError("LOGIC: invaild args", env);
+    return MK_NULL();
   }
   const left = (args[0] as BooleanVal).value;
   const right = (args[1] as BooleanVal).value;

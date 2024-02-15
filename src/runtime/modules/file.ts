@@ -14,6 +14,8 @@ import { evaluate } from "../interpreter";
 import Parser from "../../frontend/parser";
 import Environment from "../environment";
 import * as fs from "fs";
+import { throwError } from "../error-handler";
+import validateArgs from "../param-checker";
 
 const writeFile = MK_NATIVE_FN((args, env) => {
   if (
@@ -21,7 +23,8 @@ const writeFile = MK_NATIVE_FN((args, env) => {
     args[0].type != "string" ||
     args[1].type != "string"
   ) {
-    throw "write(): invaild arguments";
+    throwError("write(): invaild arguments", env);
+    return MK_NULL();
   } else {
     fs.writeFileSync(
       (args[0] as StringVal).value,
@@ -33,11 +36,15 @@ const writeFile = MK_NATIVE_FN((args, env) => {
 
 const appendFile = MK_NATIVE_FN((args, env) => {
   if (
-    args.length != 2 ||
-    args[0].type != "string" ||
-    args[1].type != "string"
+    !validateArgs(args,
+      {
+        type: [ "string" ],
+        count: 2
+      }
+    )
   ) {
-    throw "append(): invaild arguments";
+    throwError("append(): invaild arguments", env);
+    return MK_NULL();
   } else {
     fs.appendFileSync(
       (args[0] as StringVal).value,
@@ -48,21 +55,17 @@ const appendFile = MK_NATIVE_FN((args, env) => {
 });
 
 const readFile = MK_NATIVE_FN((args, env) => {
-  if (args.length != 1) {
-    throw "read(): one argument required. you can only give one argument!";
-  }
-  if (args[0].type !== "string") {
-    throw "read(): argument must be string";
+  if (!validateArgs(args, { type: [ "string" ], count: 1 })) {
+    throwError("read(): Invaild args", env);
+    return MK_NULL();
   }
   return MK_STRING(readFileSync((args[0] as StringVal).value).toString());
 });
 
 const requirefile = MK_NATIVE_FN((args, env) => {
-  if (args.length != 1) {
-    throw "require(): one argument required. you can only give one argument!";
-  }
-  if (args[0].type !== "string") {
-    throw "require(): argument must be string";
+  if (!validateArgs(args, { type: [ "string" ], count: 1 })) {
+    throwError("require(): invaild args", env);
+    return MK_NULL();
   }
 
   // evaluate and return result
