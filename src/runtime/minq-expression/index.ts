@@ -1,5 +1,5 @@
 import { appendFileSync, readFileSync, writeFileSync } from "fs";
-import { MK_NATIVE_FN, RuntimeVal, MK_STRING, StringVal, MK_NULL, MK_OBJECT, MK_MODULE, FunctionValue, ModuleVal, ObjectVal } from "../values";
+import { MK_NATIVE_FN, RuntimeVal, MK_STRING, StringVal, MK_NULL, MK_OBJECT, MK_MODULE, FunctionValue, ModuleVal, ObjectVal, MK_RUNTIMEVAL } from "../values";
 import validateArgs from "../param-checker";
 import Environment from "../environment";
 import { evaluate } from "../interpreter";
@@ -68,6 +68,23 @@ function _MK_FILE_REFERENCE(file: string) {
         }
         
     }))    
+    
+    map.set("json", MK_NATIVE_FN((args, env) => {
+        if(args.length !== 0) {
+            throwError( "MINQ QUERY ERROR: args are invaild!", env );
+            return MK_NULL();
+        }
+        else {
+            try {
+                return MK_RUNTIMEVAL(JSON.parse(readFileSync(file).toString()));
+            }
+            catch(error) {
+                throwError( "An unknown Error experienced! )-:", env )
+                return MK_NULL();
+            }
+        }
+    }));
+
     map.set("then", _MK_THEN_FUNCTION(MK_OBJECT(map)));
     return MK_OBJECT(map);
 }
