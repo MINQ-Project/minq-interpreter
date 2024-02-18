@@ -74,7 +74,7 @@ const runOnPort = MK_NATIVE_FN((args, env) => {
         }
       }
       else if (val.endsWith(".md")) {
-        const htmlString = marked.parse(val);
+        const htmlString = marked.parse(readFileSync(val).toString());
         return {
           ContentType: "text/html",
           value: htmlString 
